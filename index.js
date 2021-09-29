@@ -1,11 +1,13 @@
 const express = require('express');
 const app = express();
 const port = 3000;
-
 const fs = require('fs');
+const cors = require('cors');
 
 const { v4: uuidv4 } = require('uuid');
 const { nanoid } = require('nanoid');
+
+app.use(cors());
 
 function readUsers() {
   const usersJSON = fs.readFileSync('users.json');
