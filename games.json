@@ -1,0 +1,28 @@
+[
+    {
+        "id": "kD90aiwL",
+        "status": "finished",
+        "players": [
+            {
+                "login": "dusty",
+                "move": "rock"
+            },
+            {
+                "login": "enemy",
+                "move": "paper"
+            }
+        ]
+    },
+    {
+        "id": "KBwcAFaK",
+        "status": "game",
+        "players": [
+            {
+                "login": "enemy"
+            },
+            {
+                "login": "dusty"
+            }
+        ]
+    }
+]

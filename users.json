@@ -1,0 +1,20 @@
+[
+    {
+        "login": "dusty",
+        "token": "a085dc56-3617-4ec8-95fa-708531c75704",
+        "wins": 0,
+        "loses": 1,
+        "rocks": 4,
+        "scissors": 0,
+        "papers": 0
+    },
+    {
+        "login": "enemy",
+        "token": "8b2ddccb-a75c-4bec-8c21-13c0a2496025",
+        "wins": 1,
+        "loses": 0,
+        "rocks": 3,
+        "scissors": 0,
+        "papers": 1
+    }
+]
