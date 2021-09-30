@@ -454,12 +454,39 @@ app.get('/play', (req, res) => {
 
   const enemyPlayer = game.players.find(player => player.login !== user.login);
 
+  if (!enemyPlayer) {
+    res.send({
+      status: 'error',
+      message: 'game not started',
+    });
+
+    return;
+  }
+
   const status = calculateStatus(currentPlayer, enemyPlayer);
+
+  if (status === 'waiting-for-enemy-move') {
+    res.send({
+      status: 'error',
+      message: 'not your move',
+    });
+
+    return;
+  }
+
+  if (status === 'win' || status === 'lose') {
+    res.send({
+      status: 'error',
+      message: 'game finished',
+    });
+
+    return;
+  }
 
   if (status !== 'waiting-for-your-move') {
     res.send({
       status: 'error',
-      message: 'not your move',
+      message: 'unknown game status',
     });
 
     return;

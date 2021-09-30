@@ -15,13 +15,24 @@
     },
     {
         "id": "KBwcAFaK",
-        "status": "game",
+        "status": "finished",
+        "players": [
+            {
+                "login": "enemy",
+                "move": "paper"
+            },
+            {
+                "login": "dusty",
+                "move": "rock"
+            }
+        ]
+    },
+    {
+        "id": "JSAPpP1h",
+        "status": "pending",
         "players": [
             {
                 "login": "enemy"
-            },
-            {
-                "login": "dusty"
             }
         ]
     }
