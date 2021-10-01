@@ -426,27 +426,30 @@ app.get('/game-status', (req, res) => {
 
   const enemyPlayer = game.players.find(player => player.login !== user.login);
 
-  const checkEnemyplayer = checkIfPlayerIsOnline(users, enemyPlayer);
 
-  if (!checkEnemyplayer && !enemyPlayer.move) {
-    enemyPlayer.move = 'skip';
+  if (enemyPlayer) {
+    const checkEnemyplayer = checkIfPlayerIsOnline(users, enemyPlayer);
 
-    addUserMove(users, currentPlayer.login, currentPlayer.move);
-    addUserMove(users, enemyPlayer.login, enemyPlayer.move);
+    if (!checkEnemyplayer && !enemyPlayer.move) {
+      enemyPlayer.move = 'skip';
 
-    game.status = 'finished';
+      addUserMove(users, currentPlayer.login, currentPlayer.move);
+      addUserMove(users, enemyPlayer.login, enemyPlayer.move);
 
-    const newStatus = calculateStatus(currentPlayer, enemyPlayer);
+      game.status = 'finished';
 
-    if (newStatus === 'win') {
-      addUserWin(users, currentPlayer);
-      addUserLoss(users, enemyPlayer);
-    } else {
-      addUserLoss(users, currentPlayer);
-      addUserWin(users, enemyPlayer);
+      const newStatus = calculateStatus(currentPlayer, enemyPlayer);
+
+      if (newStatus === 'win') {
+        addUserWin(users, currentPlayer);
+        addUserLoss(users, enemyPlayer);
+      } else {
+        addUserLoss(users, currentPlayer);
+        addUserWin(users, enemyPlayer);
+      }
+
+      saveUsers(users);
     }
-
-    saveUsers(users);
   }
 
   res.send({
