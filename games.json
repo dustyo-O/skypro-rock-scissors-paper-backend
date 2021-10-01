@@ -29,10 +29,29 @@
     },
     {
         "id": "JSAPpP1h",
-        "status": "pending",
+        "status": "finished",
         "players": [
             {
-                "login": "enemy"
+                "login": "enemy",
+                "move": "rock"
+            },
+            {
+                "login": "dusty",
+                "move": "skip"
+            }
+        ]
+    },
+    {
+        "id": "EVcWPt-e",
+        "status": "finished",
+        "players": [
+            {
+                "login": "dusty",
+                "move": "paper"
+            },
+            {
+                "login": "enemy",
+                "move": "rock"
             }
         ]
     }

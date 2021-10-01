@@ -1,20 +1,22 @@
 [
     {
         "login": "dusty",
-        "token": "a085dc56-3617-4ec8-95fa-708531c75704",
-        "wins": 0,
-        "loses": 2,
-        "rocks": 5,
+        "token": "5b17ce18-a27c-441c-8c4e-063d51469638",
+        "wins": 1,
+        "loses": 3,
+        "rocks": 6,
         "scissors": 0,
-        "papers": 0
+        "papers": 1,
+        "timestamp": 1633103038598
     },
     {
         "login": "enemy",
-        "token": "8b2ddccb-a75c-4bec-8c21-13c0a2496025",
-        "wins": 2,
-        "loses": 0,
-        "rocks": 3,
+        "token": "44b38a1b-7d11-46c5-bed1-58a8ed839047",
+        "wins": 3,
+        "loses": 1,
+        "rocks": 6,
         "scissors": 0,
-        "papers": 2
+        "papers": 2,
+        "timestamp": 1633102971362
     }
 ]

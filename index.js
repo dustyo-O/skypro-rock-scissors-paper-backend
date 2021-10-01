@@ -9,7 +9,7 @@ const { nanoid } = require('nanoid');
 
 app.use(cors());
 
-function readUsers() {
+function readUsers(onlineOnly) {
   const usersJSON = fs.readFileSync('users.json');
   let users;
 
@@ -20,7 +20,7 @@ function readUsers() {
     throw error;
   }
 
-  return users;
+  return onlineOnly ? users.filter(user => timestampIsOnline(user.timestamp)) : users;
 }
 
 function saveUsers(users) {
@@ -29,8 +29,12 @@ function saveUsers(users) {
   fs.writeFileSync('users.json', newUsersJson);
 }
 
+function timestampIsOnline(timestamp) {
+  return +new Date() - timestamp < 1000 * 60 * 2;
+}
+
 function getUserByToken(users, token) {
-  return users.find(user => user.token === token);
+  return users.find(user => user.token === token && timestampIsOnline(user.timestamp));
 }
 
 function getUserByLogin(users, login) {
@@ -96,6 +100,10 @@ function calculateStatus(current, enemy) {
     return 'waiting-for-enemy-move';
   }
 
+  if (enemy.move === 'skip') {
+    return 'win';
+  }
+
   if (current.move === 'rock') {
     return enemy.move === 'paper' ? 'lose' : 'win';
   }
@@ -109,6 +117,12 @@ function calculateStatus(current, enemy) {
   }
 }
 
+function checkIfPlayerIsOnline(users, user) {
+  const userData = getUserByLogin(users, user.login);
+
+  return timestampIsOnline(userData.timestamp);
+}
+
 const fieldsMap = {
   rock: 'rocks',
   scissors: 'scissors',
@@ -118,7 +132,11 @@ const fieldsMap = {
 function addUserMove(users, login, move) {
   const user = users.find(user => user.login === login);
 
-  user[fieldsMap[move]] += 1;
+  const field = fieldsMap[move];
+
+  if (field) {
+    user[field] += 1;
+  }
 };
 
 function addUserWin(users, { login }) {
@@ -153,7 +171,7 @@ app.get('/login', (req, res) => {
 
   const users = readUsers();
 
-  let user = users.find(user => user.login === login);
+  let user = getUserByLogin(users, login);
 
   if (!user) {
     user = {
@@ -169,6 +187,7 @@ app.get('/login', (req, res) => {
   }
 
   user.token = uuidv4();
+  user.timestamp = +new Date();
 
   saveUsers(users);
 
@@ -177,6 +196,41 @@ app.get('/login', (req, res) => {
     token: user.token,
   });
 });
+
+app.get('/logout', (req, res) => {
+  const token = req.query.token;
+
+  if (!token) {
+    res.send({
+      status: 'error',
+      message: 'no token sent',
+    });
+
+    return;
+  }
+
+  const users = readUsers();
+
+  const user = getUserByToken(users, token);
+
+  if (!user) {
+    res.send({
+      status: 'error',
+      message: 'token doesn\'t exist',
+    });
+
+    return;
+  }
+
+  user.timestamp = 0;
+
+  saveUsers(users);
+
+  res.send({
+    status: 'ok'
+  });
+});
+
 
 app.get('/player-status', (req, res) => {
   const token = req.query.token;
@@ -202,6 +256,9 @@ app.get('/player-status', (req, res) => {
 
     return;
   }
+
+  user.timestamp = +new Date();
+  saveUsers(users);
 
   const games = readGames();
 
@@ -253,6 +310,9 @@ app.get('/start', (req, res) => {
 
     return;
   }
+
+  user.timestamp = +new Date();
+  saveUsers(users);
 
   const games = readGames();
 
@@ -325,6 +385,9 @@ app.get('/game-status', (req, res) => {
 
     return;
   }
+
+  user.timestamp = +new Date();
+  saveUsers(users);
 
   const id = req.query.id;
 
@@ -417,6 +480,9 @@ app.get('/play', (req, res) => {
     return;
   }
 
+  user.timestamp = +new Date();
+  saveUsers(users);
+
   const id = req.query.id;
 
   if (!id) {
@@ -461,6 +527,12 @@ app.get('/play', (req, res) => {
     });
 
     return;
+  }
+
+  const checkEnemyplayer = checkIfPlayerIsOnline(users, enemyPlayer);
+
+  if (!checkEnemyplayer && !enemyPlayer.move) {
+    enemyPlayer.move = 'skip';
   }
 
   const status = calculateStatus(currentPlayer, enemyPlayer);
@@ -532,7 +604,14 @@ app.get('/play', (req, res) => {
 app.get('/player-list', (req, res) => {
   const token = req.query.token;
 
-  const users = readUsers();
+  const users = readUsers(true);
+
+  const user = getUserByToken(users, token);
+
+  if (user) {
+    user.timestamp = +new Date();
+    saveUsers(users);
+  }
 
   res.send({
     status: 'ok',
