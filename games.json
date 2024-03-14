@@ -54,5 +54,19 @@
                 "move": "rock"
             }
         ]
+    },
+    {
+        "id": "U-l3w2rn",
+        "status": "finished",
+        "players": [
+            {
+                "login": "dusty",
+                "move": "scissors"
+            },
+            {
+                "login": "player",
+                "move": "paper"
+            }
+        ]
     }
 ]
