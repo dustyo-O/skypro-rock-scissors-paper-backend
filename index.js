@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
-const fs = require('fs');
 const cors = require('cors');
 
 const { v4: uuidv4 } = require('uuid');
@@ -9,14 +8,20 @@ const { nanoid } = require('nanoid');
 
 app.use(cors());
 
-if (!fs.existsSync('users.json')) {
-  fs.writeFileSync('users.json', '[]');
+let fs;
+if (process.env.VERCEL) {
+  fs = {
+    storage: {},
+    readFileSync: function(file) {
+      return this.storage[file] || '[]';
+    },
+    writeFileSync: function(file, data) {
+      this.storage[file] = data
+    }
+  }
+} else {
+  fs = require('fs');
 }
-
-if (!fs.existsSync('games.json')) {
-  fs.writeFileSync('games.json', '[]');
-}
-
 
 function readUsers(onlineOnly) {
   const usersJSON = fs.readFileSync('users.json');
