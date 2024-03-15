@@ -9,6 +9,15 @@ const { nanoid } = require('nanoid');
 
 app.use(cors());
 
+if (!fs.existsSync('users.json')) {
+  fs.writeFileSync('users.json', '[]');
+}
+
+if (!fs.existsSync('games.json')) {
+  fs.writeFileSync('games.json', '[]');
+}
+
+
 function readUsers(onlineOnly) {
   const usersJSON = fs.readFileSync('users.json');
   let users;
